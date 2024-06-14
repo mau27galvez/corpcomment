@@ -1,45 +1,17 @@
 import { TriangleUpIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import ErrorMessage from "./ErrorMessage";
+import { FeedbackItem } from "../App";
 
-export type FeedbackItem = {
-  id: number;
-  upVoteCount: number;
-  badgeLetter: string;
-  company: string;
-  text: string;
-  daysAgo: number;
-};
-
-export default function FeedbackList() {
-  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-
-      try {
-        const res = await fetch("https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks");
-
-        if (!res.ok) {
-          throw new Error();
-        }
-
-        const data = await res.json();
-        setFeedbackList(data.feedbacks);
-      } catch {
-        setErrorMessage("Something went wrong. Please try again.");
-      }
-
-      setIsLoading(false);
-    }
-
-    fetchData();
-  }, []);
-
+export default function FeedbackList({
+  feedbackList,
+  isLoading,
+  errorMessage,
+}: {
+  feedbackList: FeedbackItem[];
+  isLoading: boolean;
+  errorMessage: string;
+}) {
 return (
   <ol className="feedback-list">
     {isLoading && <Spinner />}
