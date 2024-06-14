@@ -1,6 +1,6 @@
 import { TriangleUpIcon } from "@radix-ui/react-icons";
-import Spinner from "./Spinner";
-import ErrorMessage from "./ErrorMessage";
+import Spinner from "../Spinner";
+import ErrorMessage from "../ErrorMessage";
 import { FeedbackItem } from "../App";
 
 export default function FeedbackList({
@@ -28,7 +28,7 @@ export function FeedbackListItem({ feedbackItem }: { feedbackItem: FeedbackItem;
     <li className="feedback">
       <button>
         <TriangleUpIcon />
-        <span>{feedbackItem.upVoteCount}</span>
+        <span>{feedbackItem.upvoteCount}</span>
       </button>
 
       <div>

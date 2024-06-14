@@ -1,6 +1,6 @@
-import { FeedbackItem } from "./App";
-import Header from "./layout/Header";
-import FeedbackList from "./feedback/FeedbackList";
+import { FeedbackItem } from "../App";
+import Header from "./Header";
+import FeedbackList from "../feedback/FeedbackList";
 
 export default function Main({
   feedbackList,

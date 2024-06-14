@@ -1,23 +1,32 @@
 import { useState, useEffect } from "react";
-import Footer from "./components/Footer";
-import HashtagList from "./components/HashtagList";
-import Main from "./components/Main";
+import Footer from "./layout/Footer";
+import HashtagList from "../components/HashtagList";
+import Main from "./layout/Main";
 
 export type FeedbackItem = {
   id: number;
-  upVoteCount: number;
-  badgeLetter: string;
-  company: string;
   text: string;
+  upvoteCount: number;
   daysAgo: number;
+  company: string;
+  badgeLetter: string;
 };
 
 function App() {
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [companyFilter, setCompanyFilter] = useState<string | null>(null);
 
-  const addToList = (text: string) => {
+  const displayedFeedbackList = companyFilter
+    ? feedbackList.filter((feedbackItem) => feedbackItem.company === companyFilter)
+    : feedbackList;
+
+  const companiesList = feedbackList
+    .map((feedbackItem) => feedbackItem.company)
+    .filter((company, index, companies) => companies.indexOf(company) === index);
+
+  const addToList = async (text: string) => {
     const companyName = text
       .split(" ")
       .find(word => word.startsWith("#"))
@@ -31,27 +40,39 @@ function App() {
 
     const newFeedbackItem = {
       id: new Date().getTime(),
-      upVoteCount: 0,
+      text,
+      upvoteCount: 0,
       badgeLetter: badgeLetter,
       company: companyName,
-      text,
       daysAgo: 0,
     };
 
     setFeedbackList([newFeedbackItem, ...feedbackList]);
+
+    await fetch(
+      "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks",
+      {
+        method: "POST",
+        body: JSON.stringify(newFeedbackItem),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
   const upVote = (id: number) => {
     const updatedFeedbackList = feedbackList.map((feedbackItem) => {
       if (feedbackItem.id === id) {
-        return { ...feedbackItem, upVoteCount: feedbackItem.upVoteCount + 1 };
+        return { ...feedbackItem, upVoteCount: feedbackItem.upvoteCount + 1 };
       }
 
       return feedbackItem;
     });
 
     setFeedbackList(updatedFeedbackList);
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,18 +96,19 @@ function App() {
 
     fetchData();
   }, []);
+
   return (
     <div className="app">
       <Footer />
       <Main
         onAddToList={addToList}
-        feedbackList={feedbackList}
+        feedbackList={displayedFeedbackList}
         isLoading={isLoading}
         errorMessage={errorMessage}
       />
-      <HashtagList />
+      <HashtagList companiesList={companiesList} onHashtagClick={setCompanyFilter} />
     </div>
-  )
+  );
 }
 
 export default App;

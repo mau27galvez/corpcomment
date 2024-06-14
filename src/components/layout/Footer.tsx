@@ -12,5 +12,5 @@ export default function Footer() {
             </p>
         </small>
     </footer>
-  )
+    )
 }
