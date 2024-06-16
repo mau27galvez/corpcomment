@@ -7,11 +7,13 @@ export default function Main({
   isLoading,
   errorMessage,
   onAddToList,
+  onUpVoteClick,
 }: {
   feedbackList: FeedbackItem[],
   isLoading: boolean,
   errorMessage: string,
   onAddToList: (text: string) => void,
+  onUpVoteClick: (id: number) => void,
 }) {
   return (
     <main className="container">
@@ -20,6 +22,7 @@ export default function Main({
         feedbackList={feedbackList}
         isLoading={isLoading}
         errorMessage={errorMessage}
+        onUpVoteClick={onUpVoteClick}
       />
     </main>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const MAX_FEEDBACK_LENGTH = 150;
 
@@ -9,6 +9,7 @@ export default function FeedbackForm({
 }) {
   const [feedback, setFeedback] = useState("");
   const remainingCharacters = MAX_FEEDBACK_LENGTH - feedback.length;
+  const [isValid, setIsValid] = useState<boolean | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > MAX_FEEDBACK_LENGTH) {
@@ -22,20 +23,36 @@ export default function FeedbackForm({
     e.preventDefault();
 
     if (feedback.trim() === "") {
+      setIsValid(false);
+      return;
+    }
+
+    if (!feedback.includes("#")) {
+      setIsValid(false);
       return;
     }
 
     if ( feedback.split(" ").filter(word => word.startsWith("#"))[0].length < 2 ) {
-      console.log("wU");
+      setIsValid(false);
       return;
     }
 
+    setIsValid(true);
     onAddToList(feedback);
     setFeedback("");
   }
 
+  useEffect(() => {
+    const timeOut = setTimeout(() => setIsValid(null), 3000);
+
+    return () => clearTimeout(timeOut);
+  }, [isValid])
+
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form
+      className={`form ${isValid === true && 'form--valid'} ${isValid === false && 'form--invalid'}`}
+      onSubmit={handleSubmit}
+    >
       <textarea
         id="feedback-textarea"
         placeholder=" "

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Footer from "./layout/Footer";
 import HashtagList from "../components/HashtagList";
 import Main from "./layout/Main";
@@ -18,13 +18,13 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [companyFilter, setCompanyFilter] = useState<string | null>(null);
 
-  const displayedFeedbackList = companyFilter
+  const displayedFeedbackList = useMemo(() => companyFilter
     ? feedbackList.filter((feedbackItem) => feedbackItem.company === companyFilter)
-    : feedbackList;
+    : feedbackList, [companyFilter, feedbackList]);
 
-  const companiesList = feedbackList
+  const companiesList = useMemo(() => feedbackList
     .map((feedbackItem) => feedbackItem.company)
-    .filter((company, index, companies) => companies.indexOf(company) === index);
+    .filter((company, index, companies) => companies.indexOf(company) === index), [feedbackList]);
 
   const addToList = async (text: string) => {
     const companyName = text
@@ -63,9 +63,10 @@ function App() {
   };
 
   const upVote = (id: number) => {
-    const updatedFeedbackList = feedbackList.map((feedbackItem) => {
+    console.log("sdasd");
+    const updatedFeedbackList = feedbackList.map(feedbackItem => {
       if (feedbackItem.id === id) {
-        return { ...feedbackItem, upVoteCount: feedbackItem.upvoteCount + 1 };
+        return { ...feedbackItem, upvoteCount: feedbackItem.upvoteCount + 1 };
       }
 
       return feedbackItem;
@@ -105,6 +106,7 @@ function App() {
         feedbackList={displayedFeedbackList}
         isLoading={isLoading}
         errorMessage={errorMessage}
+        onUpVoteClick={upVote}
       />
       <HashtagList companiesList={companiesList} onHashtagClick={setCompanyFilter} />
     </div>
