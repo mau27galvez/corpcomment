@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
+import { useFeedbackItemsContext } from "../../lib/useFeedbackItemsContext";
 
 const MAX_FEEDBACK_LENGTH = 150;
 
-export default function FeedbackForm({
-  onAddToList,
-}: {
-  onAddToList: (text: string) => void;
-}) {
+export default function FeedbackForm() {
   const [feedback, setFeedback] = useState("");
   const remainingCharacters = MAX_FEEDBACK_LENGTH - feedback.length;
   const [isValid, setIsValid] = useState<boolean | null>(null);
+  const { addToList } = useFeedbackItemsContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > MAX_FEEDBACK_LENGTH) {
@@ -38,7 +36,7 @@ export default function FeedbackForm({
     }
 
     setIsValid(true);
-    onAddToList(feedback);
+    addToList(feedback);
     setFeedback("");
   }
 

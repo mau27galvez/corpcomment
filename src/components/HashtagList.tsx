@@ -1,16 +1,14 @@
-export default function HashtagList({
-  companiesList,
-  onHashtagClick,
-}: {
-  companiesList: string[],
-  onHashtagClick: (company: string) => void;
-}) {
+import { useFeedbackItemsContext } from "../lib/useFeedbackItemsContext";
+
+export default function HashtagList() {
+  const { companiesList } = useFeedbackItemsContext();
+
   return (
     <aside>
         <ul className="hashtags">
             {
               companiesList.map((company) =>
-                <HashtagListItem key={company} company={company} onHashtagClick={onHashtagClick} />
+                <HashtagListItem key={company} company={company} />
               )
             }
         </ul>
@@ -20,14 +18,14 @@ export default function HashtagList({
 
   function HashtagListItem({
     company,
-    onHashtagClick
   }: {
     company: string,
-    onHashtagClick: (company: string) => void;
   }) {
+  const { setCompanyFilter } = useFeedbackItemsContext();
+
   return (
     <li>
-      <button onClick={() => onHashtagClick(company)}>#{company}</button>
+      <button onClick={() => setCompanyFilter(company)}>#{company}</button>
     </li>
   );
 }

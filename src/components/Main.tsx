@@ -1,4 +1,4 @@
-import { FeedbackItem } from "./App";
+import { FeedbackItem } from "../contexts/FeedbackItemsContextProvider";
 import Header from "./layout/Header";
 import FeedbackList from "./feedback/FeedbackList";
 
